@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منسق الملابس الذكي - كريم الرفاعي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #4f46e5;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #16a34a; 
+            --danger: #dc2626;  
+            --nav-height: 85px;
+            --radius: 20px;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --morning-color: #f59e0b;
+            --evening-color: #6366f1;
+            --creative-color: #ec4899;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            direction: rtl;
+            padding-bottom: calc(var(--nav-height) + 40px);
+        }
+
+        /* --- Header --- */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), #1e1b4b);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        .app-header h1 { font-size: 1.4em; font-weight: 800; margin-bottom: 5px; }
+        .dev-info { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 8px 15px; 
+            border-radius: 50px; 
+            font-size: 0.85em; 
+            color: var(--accent); 
+            font-weight: 700; 
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 5px;
+        }
+
+        /* --- Layout --- */
+        .container { max-width: 600px; margin: auto; padding: 0 15px; }
+        .view-section { display: none; animation: slideIn 0.4s ease-out; }
+        .view-section.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Cards --- */
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 22px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid #e2e8f0; position: relative; }
+        .section-title { font-size: 1.1em; font-weight: 800; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+        .section-title::before { content: ''; width: 5px; height: 20px; background: var(--secondary); border-radius: 10px; }
+
+        /* --- Buttons --- */
+        .btn { padding: 16px 20px; border: none; border-radius: 16px; cursor: pointer; font-family: inherit; font-size: 1em; font-weight: 700; transition: 0.3s; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .btn-primary { background: var(--secondary); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
+        .btn-warning { background: var(--accent); }
+        .btn-danger { background: var(--danger); }
+        .btn-outline { background: #f1f5f9; color: var(--text-main); border: 1px solid #e2e8f0; }
+        .btn-sm { padding: 8px 12px; font-size: 0.8em; width: auto; }
+
+        /* --- Style Selectors --- */
+        .look-pill { flex: 1; border: 2px solid #e2e8f0; padding: 10px; border-radius: 15px; cursor: pointer; font-size: 0.8em; font-weight: 800; color: var(--text-muted); background: white; transition: 0.2s; text-align: center; }
+        .look-pill.active { background: var(--secondary); color: white; border-color: var(--secondary); box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2); }
+
+        /* --- Accordion --- */
+        .accordion-item { border: 1px solid #e2e8f0; border-radius: 18px; margin-bottom: 10px; overflow: hidden; background: white; }
+        .accordion-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 800; }
+        .accordion-header.active { background: #f1f5f9; }
+        .accordion-content { display: none; padding: 12px; background: white; }
+        .accordion-content.open { display: block; }
+
+        .color-chip { display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 50px; border: 1px solid #e2e8f0; margin: 3px; }
+        
+        /* --- Badges --- */
+        .badge { font-size: 0.7em; padding: 4px 12px; border-radius: 50px; color: white; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
+        .badge-morning { background: var(--morning-color); }
+        .badge-evening { background: var(--evening-color); }
+        .badge-creative { background: var(--creative-color); }
+
+        /* --- Analysis UI --- */
+        .anal-bubble-item { display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 6px; border: 1px solid #e2e8f0; }
+        .anal-viz-bar { height: 25px; width: 100%; border-radius: 12px; display: flex; overflow: hidden; margin: 12px 0; border: 2px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+
+        /* --- Bottom Nav --- */
+        .bottom-nav {
+            position: fixed; bottom: 15px; left: 15px; right: 15px; height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            z-index: 1000; border: 1px solid rgba(255,255,255,0.5);
+        }
+        .nav-item { flex: 1; text-align: center; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; }
+        .nav-item.active { color: var(--secondary); font-weight: 800; transform: translateY(-5px); }
+
+        /* --- Modals --- */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); z-index:2000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(10px); padding:20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background:white; width:100%; max-width:480px; border-radius:30px; padding:25px; max-height:85vh; overflow-y:auto; position: relative; }
+
+        .toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 12px 30px; border-radius: 50px; font-weight: 700; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 3000; }
+        .toast.show { opacity: 1; }
+        .hidden { display: none !important; }
+
+        .item-row { display: flex; align-items: center; gap: 12px; padding: 10px; background: #f8fafc; border-radius: 14px; margin-bottom: 8px; border: 1px solid #f1f5f9; }
+        .fix-label { font-size: 0.7em; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); }
+
+        /* --- Advanced Selection --- */
+        .selection-slot { border: 2px dashed #cbd5e1; padding: 15px; border-radius: 18px; margin-bottom: 10px; background: #fff; }
+        .selection-slot.active { border: 2px solid var(--secondary); background: #f0f4ff; }
+        .toggle-row { display: flex; align-items: center; gap: 10px; background: #eef2ff; padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; color: var(--secondary); font-weight: 800; font-size: 0.9em; cursor: pointer; border: 1px solid #c7d2fe; }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>منسق الملابس الذكي</h1>
+        <div class="dev-info">كريم أحمد الرفاعي محمد | 01554165302</div>
+    </header>
+
+    <div class="container">
+
+        <!-- VIEW: COORDINATOR -->
+        <div id="view-coordinator" class="view-section active">
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                <div id="tab-summer" class="btn btn-outline" style="flex:1;" onclick="setSeason('summer', this)">☀️ صيفي</div>
+                <div id="tab-winter" class="btn btn-outline" style="flex:1;" onclick="setSeason('winter', this)">❄️ شتوي</div>
+            </div>
+
+            <div id="coord-ui" class="hidden">
+                <div class="card">
+                    <h2 class="section-title">1. حدد القطع الثابتة (الطبقات)</h2>
+                    
+                    <!-- Slot 1 -->
+                    <div class="selection-slot active" id="slot-1">
+                        <div style="font-size: 0.8em; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">القطعة الأساسية (1)</div>
+                        <select id="base-item-1" onchange="renderVisualPicker(1)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; font-family: inherit;"></select>
+                        <div id="visual-grid-1" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                    </div>
+
+                    <!-- Slot 2 Toggle & Area -->
+                    <div class="toggle-row" onclick="toggleSecondSlot()">
+                        <input type="checkbox" id="enable-second" style="width:18px; height:18px;">
+                        <span>تثبيت قطعة ثانية (طبقة 2)</span>
+                    </div>
+
+                    <div class="selection-slot hidden" id="slot-2">
+                        <div style="font-size: 0.8em; font-weight: 800; color: var(--accent); margin-bottom: 8px;">القطعة المضافة (2)</div>
+                        <select id="base-item-2" onchange="renderVisualPicker(2)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; font-family: inherit;"></select>
+                        <div id="visual-grid-2" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                    </div>
+
+                    <!-- Slot 3 Toggle & Area (NEW) -->
+                    <div class="toggle-row" onclick="toggleThirdSlot()">
+                        <input type="checkbox" id="enable-third" style="width:18px; height:18px;">
+                        <span>تثبيت قطعة ثالثة (طبقة 3)</span>
+                    </div>
+
+                    <div class="selection-slot hidden" id="slot-3">
+                        <div style="font-size: 0.8em; font-weight: 800; color: var(--success); margin-bottom: 8px;">القطعة المضافة (3)</div>
+                        <select id="base-item-3" onchange="renderVisualPicker(3)" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; font-family: inherit;"></select>
+                        <div id="visual-grid-3" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                    </div>
+
+                    <div id="status-summary" class="item-row hidden" style="background: #f1f5f9; border: 1px solid #e2e8f0; flex-direction: column; align-items: flex-start;">
+                        <div id="summary-1" style="font-size: 0.85em; font-weight: 800;"></div>
+                        <div id="summary-2" style="font-size: 0.85em; font-weight: 800;" class="hidden"></div>
+                        <div id="summary-3" style="font-size: 0.85em; font-weight: 800;" class="hidden"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="section-title">2. نمط الذكاء اللوني</h2>
+                    <div style="display: flex; gap: 6px; margin-bottom: 18px;">
+                        <button class="look-pill active" id="pill-creative" onclick="setLookPref('creative', this)">🎨 إبداعي<br><small>تنسيق فني</small></button>
+                        <button class="look-pill" id="pill-morning" onclick="setLookPref('morning', this)">☀️ صباحي<br><small>ألوان زاهية</small></button>
+                        <button class="look-pill" id="pill-evening" onclick="setLookPref('evening', this)">🌙 مسائي<br><small>ألوان فخمة</small></button>
+                    </div>
+                    <button id="btn-make-magic" class="btn btn-primary">✨ استخراج خيارات بناءً على اختيارك</button>
+                </div>
+
+                <div id="sugg-results-area"></div>
+            </div>
+
+            <div id="coord-empty" style="text-align: center; padding: 50px 20px;">
+                <div style="font-size: 3.5em; margin-bottom: 15px;">👞</div>
+                <h3 style="font-weight: 800;">مرحباً بك في خزانتك الذكية</h3>
+                <p style="color:var(--text-muted);">اختر الموسم لتبدأ رحلة الأناقة اللانهائية</p>
+            </div>
+        </div>
+
+        <!-- VIEW: SAVED -->
+        <div id="view-saved" class="view-section">
+            <div class="card">
+                <div class="section-title" style="justify-content: space-between;">
+                    الأطقم المحفوظة
+                    <button onclick="exportAllSaved()" class="btn btn-sm btn-outline">📤 تصدير</button>
+                </div>
+                <div id="saved-list-render"></div>
+            </div>
+        </div>
+
+        <!-- VIEW: LIBRARY -->
+        <div id="view-library" class="view-section">
+            <div class="card" style="background: var(--primary); color: white;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800;">📦 إدارة الخزانة</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="exportLib()" class="btn btn-sm btn-outline" style="background: rgba(255,255,255,0.1); color: #fff;">تصدير</button>
+                        <button onclick="document.getElementById('file-in-lib').click()" class="btn btn-sm btn-outline" style="background: rgba(255,255,255,0.1); color: #fff;">استيراد</button>
+                    </div>
+                </div>
+                <input type="file" id="file-in-lib" class="hidden" accept=".json" onchange="importLibrary(event)">
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">إضافة قطعة جديدة</h2>
+                <select id="add-type-sel" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 15px; margin-bottom: 15px;"></select>
+                
+                <div style="background: #f8fafc; padding: 12px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                    <label style="display:flex; align-items:center; cursor:pointer; color: var(--secondary); font-weight: 800;">
+                        <input type="checkbox" id="check-use-anal" onchange="toggleAnalView()" style="width: 18px; height: 18px; margin-left:10px;">
+                        📸 تحليل ذكي من صورة (متقدم)
+                    </label>
+                </div>
+
+                <div id="anal-section" class="hidden" style="background: #f1f5f9; padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 2px dashed #cbd5e1;">
+                    <input type="file" id="input-img-file" accept="image/*" class="btn btn-outline" style="font-size: 0.8em; margin-bottom: 12px;">
+                    <div id="anal-active-area" class="hidden">
+                        <div style="position: relative; border-radius: 12px; overflow: hidden;">
+                            <img id="img-preview-box" style="width: 100%; cursor: crosshair; background: #000; max-height: 250px; object-fit: contain; display: block;">
+                        </div>
+                        <div id="anal-viz-bar" class="anal-viz-bar"></div>
+                        <div id="anal-bubbles-list"></div>
+                    </div>
+                </div>
+
+                <div id="manual-section">
+                    <input type="text" id="add-color-name" placeholder="وصف القطعة (مثلاً: قميص أزرق)" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 15px; margin-bottom: 12px;">
+                    <div id="manual-hex-field">
+                        <input type="text" id="add-color-hex" placeholder="كود اللون أو Red|Blue" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 15px; margin-bottom: 12px;">
+                    </div>
+                </div>
+                <button id="btn-save-item" class="btn btn-success">💾 حفظ في الخزانة</button>
+            </div>
+
+            <div id="visual-library-render"></div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="modal-edit-box" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="font-weight:800; margin-bottom:15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">تعديل التنسيق</h3>
+            <div id="edit-items-container"></div>
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-reroll-items" class="btn btn-warning">🔄 إعادة تدوير غير المثبت</button>
+                <div style="display:flex; gap:8px;">
+                    <button id="btn-save-edited" class="btn btn-success" style="flex:1;">✅ حفظ</button>
+                    <button id="btn-save-as-new" class="btn btn-primary" style="flex:1;">✨ طقم جديد</button>
+                </div>
+                <button class="btn btn-outline" onclick="closeEdit()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-edit-lib-item" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="font-weight:800; margin-bottom:15px;">تعديل قطعة</h3>
+            <input type="text" id="edit-lib-name" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 15px; margin-bottom: 12px;">
+            <input type="text" id="edit-lib-hex" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 15px; margin-bottom: 15px;">
+            <button id="btn-confirm-edit-lib" class="btn btn-success" style="width:100%; margin-bottom:8px;">تأكيد</button>
+            <button class="btn btn-outline" style="width:100%;" onclick="closeLibEdit()">إغلاق</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchView('coordinator', this)">
+            <span style="font-size: 1.5em;">👔</span><span style="font-size: 0.7em;">المنسق</span>
+        </div>
+        <div class="nav-item" onclick="switchView('saved', this)">
+            <span style="font-size: 1.5em;">⭐</span><span style="font-size: 0.7em;">المحفوظات</span>
+        </div>
+        <div class="nav-item" onclick="switchView('library', this)">
+            <span style="font-size: 1.5em;">🧺</span><span style="font-size: 0.7em;">الخزانة</span>
+        </div>
+    </nav>
+
+    <script>
+        // --- الأساسيات والتخزين ---
+        // تحديث المفتاح للإصدار التاسع لضمان الترحيل السليم
+        const KEYS = { COLORS: 'clothingAppColors_v9', LOOKS: 'clothingAppSavedLooks_v9' };
+        const LABELS = { shirt: 'قميص', checkeredShirt: 'قميص كاروهات', pants: 'بنطلون', shoes: 'حذاء', belt: 'حزام', watch: 'ساعة', sweater: 'سويتر', jacket: 'جاكيت/هودي' };
+        const ICONS = { shirt: '👕', checkeredShirt: '🏁', pants: '👖', shoes: '👟', belt: '🎗️', watch: '⌚', sweater: '🧶', jacket: '🧥' };
+        
+        const STYLE_META = {
+            morning: { label: 'تنسيق صباحي', icon: '☀️', class: 'badge-morning' },
+            evening: { label: 'تنسيق مسائي', icon: '🌙', class: 'badge-evening' },
+            creative: { label: 'تنسيق إبداعي', icon: '🎨', class: 'badge-creative' },
+            monochromatic: { label: 'مونوكروم', icon: '🌗', class: 'badge-creative' },
+            complementary: { label: 'تضاد لوني', icon: '⚡', class: 'badge-creative' },
+            analogous: { label: 'ألوان مجاورة', icon: '🌈', class: 'badge-creative' },
+            minimalist: { label: 'بساطة حيادية', icon: '⚪', class: 'badge-creative' },
+            earth: { label: 'ألوان ترابية', icon: '🌿', class: 'badge-creative' }
+        };
+
+        const DEFAULTS = { shirt: [{name:'أبيض سادة', value:'#ffffff'}], pants: [{name:'أسود كلاسيك', value:'#111111'}] };
+
+        let appState = { 
+            season: null, 
+            colors: {}, 
+            saved: [], 
+            pref: 'creative', 
+            base1: { type: null, val: null, name: null },
+            base2: { type: null, val: null, name: null, active: false },
+            base3: { type: null, val: null, name: null, active: false } // Slot 3 added
+        };
+
+        let currentAnal = [], currentSuggs = [], editIdx = -1, editItems = [], editSource = 'saved', libEditType = null, libEditIdx = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initStorage(); renderLibrary(); renderSaved(); initImgPicker();
+            document.getElementById('btn-save-item').onclick = saveToLibrary;
+            document.getElementById('btn-make-magic').onclick = makeSuggestions;
+            document.getElementById('btn-reroll-items').onclick = handleReroll;
+            document.getElementById('btn-save-edited').onclick = saveTheEdit;
+            document.getElementById('btn-save-as-new').onclick = () => saveOutfit(editItems, appState.pref);
+            document.getElementById('btn-confirm-edit-lib').onclick = confirmLibEdit;
+        });
+
+        function initStorage() {
+            // ترحيل البيانات من الإصدارات السابقة (v7 و v8)
+            const oldColorsV8 = localStorage.getItem('clothingAppColors_v8');
+            const oldLooksV8 = localStorage.getItem('clothingAppSavedLooks_v8');
+            const oldColorsV7 = localStorage.getItem('clothingAppColors_v7');
+            const oldLooksV7 = localStorage.getItem('clothingAppSavedLooks_v7');
+            
+            const c = localStorage.getItem(KEYS.COLORS) || oldColorsV8 || oldColorsV7;
+            const l = localStorage.getItem(KEYS.LOOKS) || oldLooksV8 || oldLooksV7;
+            
+            appState.colors = c ? JSON.parse(c) : JSON.parse(JSON.stringify(DEFAULTS));
+            appState.saved = l ? JSON.parse(l) : [];
+            
+            saveStorage();
+        }
+
+        function saveStorage() {
+            localStorage.setItem(KEYS.COLORS, JSON.stringify(appState.colors));
+            localStorage.setItem(KEYS.LOOKS, JSON.stringify(appState.saved));
+        }
+
+        // --- محرك الألوان ---
+        function hexToHSL(hex) {
+            let r=0, g=0, b=0;
+            let hx = hex;
+            if(hex.includes('|')) hx = hex.split('|')[0];
+            if(hex.startsWith('[')) { try { hx = JSON.parse(hex)[0].color; } catch(e){ hx = '#cccccc'; } }
+
+            if(hx.startsWith('#')){ r=parseInt(hx.slice(1,3),16)/255; g=parseInt(hx.slice(3,5),16)/255; b=parseInt(hx.slice(5,7),16)/255; }
+            else { 
+                const d = document.createElement("div"); d.style.color = hx; document.body.appendChild(d);
+                const s = window.getComputedStyle(d).color; document.body.removeChild(d);
+                const m = s.match(/\d+/g); if(m) { r=m[0]/255; g=m[1]/255; b=m[2]/255; }
+            }
+            let max=Math.max(r,g,b), min=Math.min(r,g,b), h, s, l=(max+min)/2;
+            if(max===min){ h=s=0; } else {
+                let d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+                switch(max){ case r: h=(g-b)/d+(g<b?6:0); break; case g: h=(b-r)/d+2; break; case b: h=(r-g)/d+4; break; }
+                h /= 6;
+            }
+            return { h:h*360, s:s*100, l:l*100 };
+        }
+
+        function getStyleMatch(baseHex, styleType, pool) {
+            if(!pool.length) return null;
+            const base = hexToHSL(baseHex);
+            let candidates = pool.map(item => ({ ...item, hsl: hexToHSL(item.value) }));
+            
+            if(appState.pref === 'morning') candidates = candidates.filter(c => c.hsl.l > 40);
+            else if(appState.pref === 'evening') candidates = candidates.filter(c => c.hsl.l < 65);
+            
+            const finalPool = candidates.length ? candidates : pool.map(item => ({ ...item, hsl: hexToHSL(item.value) }));
+
+            let results = [];
+            switch(styleType) {
+                case 'monochromatic': results = finalPool.sort((a,b) => Math.abs(a.hsl.h - base.h)).slice(0, 5); break;
+                case 'complementary': const th = (base.h + 180) % 360; results = finalPool.filter(c => Math.abs(c.hsl.h - th) < 45).slice(0, 5); break;
+                case 'analogous': const ta = (base.h + 35) % 360; results = finalPool.filter(c => Math.abs(c.hsl.h - ta) < 45).slice(0, 5); break;
+                case 'minimalist': results = finalPool.filter(c => c.hsl.s < 25 || c.hsl.l > 80 || c.hsl.l < 25); break;
+                case 'earth': results = finalPool.filter(c => (c.hsl.h > 10 && c.hsl.h < 60) || (c.hsl.h > 70 && c.hsl.h < 160)); break;
+                default: results = finalPool;
+            }
+
+            const selection = results.length ? results : finalPool;
+            return selection[Math.floor(Math.random() * selection.length)];
+        }
+
+        // --- واجهة المنسق ---
+        function setSeason(s, el) {
+            appState.season = s;
+            document.getElementById('coord-empty').classList.add('hidden');
+            document.getElementById('coord-ui').classList.remove('hidden');
+            document.querySelectorAll('#view-coordinator .btn-outline').forEach(b => b.classList.remove('btn-primary'));
+            el.classList.add('btn-primary');
+            
+            // القائمة المتاحة
+            const list = s === 'summer' ? ['shirt', 'pants', 'shoes', 'belt', 'watch'] : ['jacket', 'shirt', 'pants', 'shoes', 'belt', 'watch'];
+            const sel1 = document.getElementById('base-item-1'); sel1.innerHTML = '';
+            const sel2 = document.getElementById('base-item-2'); sel2.innerHTML = '';
+            const sel3 = document.getElementById('base-item-3'); sel3.innerHTML = ''; // Slot 3 init
+            
+            list.forEach(k => {
+                sel1.innerHTML += `<option value="${k}">${LABELS[k]}</option>`;
+                sel2.innerHTML += `<option value="${k}">${LABELS[k]}</option>`;
+                sel3.innerHTML += `<option value="${k}">${LABELS[k]}</option>`;
+            });
+
+            sel1.value = list[0]; 
+            sel2.value = (list.length > 1) ? list[1] : list[0];
+            sel3.value = (list.length > 2) ? list[2] : list[0];
+            
+            renderVisualPicker(1); renderVisualPicker(2); renderVisualPicker(3);
+        }
+
+        function toggleSecondSlot() {
+            const chk = document.getElementById('enable-second');
+            appState.base2.active = chk.checked;
+            document.getElementById('slot-2').classList.toggle('hidden', !chk.checked);
+            document.getElementById('summary-2').classList.toggle('hidden', !chk.checked);
+            updateSummary();
+        }
+
+        function toggleThirdSlot() {
+            const chk = document.getElementById('enable-third');
+            appState.base3.active = chk.checked;
+            document.getElementById('slot-3').classList.toggle('hidden', !chk.checked);
+            document.getElementById('summary-3').classList.toggle('hidden', !chk.checked);
+            updateSummary();
+        }
+
+        function renderVisualPicker(slotNum) {
+            const type = document.getElementById(`base-item-${slotNum}`).value;
+            const pool = getPool(type);
+            const grid = document.getElementById(`visual-grid-${slotNum}`); grid.innerHTML = '';
+            const status = document.getElementById('status-summary');
+            
+            if(!pool.length) { grid.innerHTML = '<p style="color:red; font-size:0.7em;">لا توجد قطع</p>'; return; }
+
+            pool.forEach((c, idx) => {
+                const circle = document.createElement('div');
+                circle.style = `width:35px; height:35px; border-radius:10px; cursor:pointer; border:3px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); ${getSwatchStyle(c.value)}`;
+                circle.onclick = () => {
+                    grid.querySelectorAll('div').forEach(x => x.style.borderColor = '#fff');
+                    circle.style.borderColor = 'var(--secondary)';
+                    
+                    if(slotNum === 1) { appState.base1.type = type; appState.base1.val = c.value; appState.base1.name = c.name; } 
+                    else if(slotNum === 2) { appState.base2.type = type; appState.base2.val = c.value; appState.base2.name = c.name; }
+                    else { appState.base3.type = type; appState.base3.val = c.value; appState.base3.name = c.name; }
+                    
+                    updateSummary();
+                };
+                grid.appendChild(circle);
+                
+                // تحديد افتراضي للعنصر الأول عند تغيير النوع
+                if(idx === 0) {
+                     // Check if currently selected is valid, if not select first
+                     let currentVal = (slotNum === 1) ? appState.base1.val : ((slotNum === 2) ? appState.base2.val : appState.base3.val);
+                     let isValid = pool.some(p => p.value === currentVal);
+                     
+                     if (!currentVal || !isValid) {
+                        circle.style.borderColor = 'var(--secondary)';
+                        if(slotNum === 1) { appState.base1.type = type; appState.base1.val = c.value; appState.base1.name = c.name; } 
+                        else if(slotNum === 2) { appState.base2.type = type; appState.base2.val = c.value; appState.base2.name = c.name; }
+                        else { appState.base3.type = type; appState.base3.val = c.value; appState.base3.name = c.name; }
+                     } else {
+                         // Reselect current
+                         if (c.value === currentVal) circle.style.borderColor = 'var(--secondary)';
+                     }
+                }
+            });
+            status.classList.remove('hidden'); updateSummary();
+        }
+
+        function updateSummary() {
+            const s1 = document.getElementById('summary-1'), s2 = document.getElementById('summary-2'), s3 = document.getElementById('summary-3');
+            if(appState.base1.val) s1.innerHTML = `الأساس (1): ${createSwatch(appState.base1.val, '18px')} ${LABELS[appState.base1.type]} - ${appState.base1.name}`;
+            if(appState.base2.active && appState.base2.val) s2.innerHTML = `المضاف (2): ${createSwatch(appState.base2.val, '18px')} ${LABELS[appState.base2.type]} - ${appState.base2.name}`;
+            if(appState.base3.active && appState.base3.val) s3.innerHTML = `المضاف (3): ${createSwatch(appState.base3.val, '18px')} ${LABELS[appState.base3.type]} - ${appState.base3.name}`;
+        }
+
+        function makeSuggestions() {
+            if(!appState.base1.val) return showToast("اختر القطعة الأساسية");
+            
+            const defaultStruct = appState.season === 'summer' ? ['shirt', 'pants', 'shoes', 'belt', 'watch'] : ['jacket', 'shirt', 'pants', 'shoes', 'belt', 'watch'];
+            
+            const strategies = [
+                { id: 'monochromatic', label: 'تناغم مونوكروم (أحادي)' },
+                { id: 'complementary', label: 'تضاد إبداعي (ملفت)' },
+                { id: 'analogous', label: 'تناغم الموضة (ألوان مجاورة)' },
+                { id: 'minimalist', label: 'بساطة الألوان الحيادية' },
+                { id: 'earth', label: 'ألوان ترابية (طبيعية)' },
+                { id: 'creative', label: 'تنسيق إبداعي فني' }
+            ];
+
+            currentSuggs = [];
+            strategies.forEach(s => {
+                const items = [];
+                let currentOutfitStruct = [...defaultStruct];
+
+                // --- منطق الطبقات الثلاث (Triple Layering Logic) ---
+                // حساب عدد مرات تكرار كل نوع في القطع المثبتة
+                let fixedCounts = {};
+                const activeBases = [appState.base1];
+                if(appState.base2.active) activeBases.push(appState.base2);
+                if(appState.base3.active) activeBases.push(appState.base3);
+
+                activeBases.forEach(b => {
+                    fixedCounts[b.type] = (fixedCounts[b.type] || 0) + 1;
+                });
+
+                // تعديل الهيكل ليتسع لكل القطع المثبتة
+                for (const [type, count] of Object.entries(fixedCounts)) {
+                    // كم عدد هذا النوع الموجود أصلاً في الهيكل الافتراضي؟
+                    let existingCount = currentOutfitStruct.filter(t => t === type).length;
+                    
+                    // إذا كان المثبت أكثر من الموجود، أضف الفرق
+                    while(existingCount < count) {
+                        // إضافة النوع في بداية المصفوفة (عادة الطبقات تكون في الأعلى)
+                        currentOutfitStruct.unshift(type);
+                        existingCount++;
+                    }
+                }
+
+                // --- تعبئة الطقم ---
+                // تتبع القطع المثبتة التي تم استخدامها بالفعل لتجنب التكرار
+                let base1Used = false;
+                let base2Used = false;
+                let base3Used = false;
+
+                currentOutfitStruct.forEach(t => {
+                    // محاولة استخدام القطع المثبتة أولاً حسب الأولوية
+                    if(t === appState.base1.type && !base1Used) {
+                        items.push({type: t, colorValue: appState.base1.val});
+                        base1Used = true;
+                    }
+                    else if(appState.base2.active && t === appState.base2.type && !base2Used) {
+                        items.push({type: t, colorValue: appState.base2.val});
+                        base2Used = true;
+                    }
+                    else if(appState.base3.active && t === appState.base3.type && !base3Used) {
+                        items.push({type: t, colorValue: appState.base3.val});
+                        base3Used = true;
+                    }
+                    else {
+                        // توليد القطع غير المثبتة بناءً على القطعة الأساسية
+                        const m = getStyleMatch(appState.base1.val, s.id, getPool(t));
+                        if(m) {
+                            let act = t;
+                            if(t==='shirt' && appState.colors.checkeredShirt?.some(x=>x.value===m.value)) act='checkeredShirt';
+                            if(t==='jacket' && appState.colors.sweater?.some(x=>x.value===m.value)) act='sweater';
+                            items.push({type:act, colorValue: m.value});
+                        }
+                    }
+                });
+
+                let finalPref = (s.id === 'creative') ? appState.pref : s.id;
+                currentSuggs.push({ label: s.label, items: items, pref: finalPref });
+            });
+            renderSuggestions();
+        }
+
+        function renderSuggestions() {
+            const area = document.getElementById('sugg-results-area'); area.innerHTML = '';
+            currentSuggs.forEach((l, i) => {
+                const card = document.createElement('div'); card.className = 'card';
+                card.style.borderRight = "6px solid var(--secondary)";
+                let h = `<div style="margin-bottom:12px;"><span style="background:#eef2ff; color:var(--secondary); padding:4px 12px; border-radius:50px; font-weight:800; font-size:0.75em;">${l.label}</span></div>`;
+                
+                l.items.forEach(it => {
+                    const c = findColor(it.type, it.colorValue);
+                    h += `<div class="item-row">${createSwatch(it.colorValue, '28px')} <div><div style="font-size:0.7em; color:var(--text-muted);">${LABELS[it.type]}</div><div style="font-weight:800; font-size:0.95em;">${c.name}</div></div></div>`;
+                });
+                
+                h += `<div style="display:flex; gap:10px; margin-top:15px;"><button class="btn btn-sm btn-outline" style="flex:1;" onclick="openEdit(${i}, 'suggestion')">🛠️ تعديل</button><button class="btn btn-sm btn-success" style="flex:1;" onclick='saveOutfit(currentSuggs[${i}].items, currentSuggs[${i}].pref)'>❤️ حفظ</button></div>`;
+                card.innerHTML = h; area.appendChild(card);
+            });
+        }
+
+        function setLookPref(p, el) { appState.pref = p; document.querySelectorAll('.look-pill').forEach(x => x.classList.remove('active')); el.classList.add('active'); }
+
+        function openEdit(idx, src) {
+            editIdx = idx; editSource = src;
+            const look = (src === 'saved') ? appState.saved[idx] : currentSuggs[idx];
+            if(!look) return;
+            editItems = JSON.parse(JSON.stringify(look.items));
+            updateModalUI();
+            document.getElementById('modal-edit-box').classList.add('show');
+        }
+
+        function updateModalUI() {
+            const cont = document.getElementById('edit-items-container'); 
+            const existingFixes = Array.from(document.querySelectorAll('.fix-cb')).map(cb => cb.checked);
+            cont.innerHTML = '';
+            editItems.forEach((it, i) => {
+                const c = findColor(it.type, it.colorValue);
+                const isFixed = existingFixes[i] || false;
+                cont.innerHTML += `
+                    <div class="item-row">
+                        ${createSwatch(it.colorValue, '24px')} 
+                        <div style="flex:1;">
+                            <div style="font-size:0.7em; color:var(--text-muted);">${LABELS[it.type]}</div>
+                            <div style="font-weight:800; font-size:0.9em;">${c.name}</div>
+                        </div>
+                        <label class="fix-label">تثبيت <input type="checkbox" class="fix-cb" data-idx="${i}" ${isFixed ? 'checked' : ''}></label>
+                    </div>`;
+            });
+        }
+
+        function handleReroll() {
+            document.querySelectorAll('.fix-cb').forEach(cb => {
+                if(!cb.checked) {
+                    const i = parseInt(cb.dataset.idx);
+                    const it = editItems[i];
+                    let baseT = it.type;
+                    if(baseT==='checkeredShirt') baseT='shirt';
+                    if(baseT==='sweater') baseT='jacket';
+                    const pool = getPool(baseT);
+                    if(pool.length) {
+                        const r = pool[Math.floor(Math.random() * pool.length)];
+                        it.colorValue = r.value;
+                        if(baseT==='shirt' && appState.colors.checkeredShirt?.some(x=>x.value===r.value)) it.type='checkeredShirt';
+                        else if(baseT==='jacket' && appState.colors.sweater?.some(x=>x.value===r.value)) it.type='sweater';
+                        else it.type = baseT;
+                    }
+                }
+            });
+            updateModalUI();
+        }
+
+        function saveTheEdit() {
+            if(editSource === 'saved') { appState.saved[editIdx].items = editItems; saveStorage(); renderSaved(); } 
+            else { currentSuggs[editIdx].items = editItems; renderSuggestions(); }
+            closeEdit(); showToast("تم التحديث");
+        }
+
+        function closeEdit() { document.getElementById('modal-edit-box').classList.remove('show'); }
+
+        function renderLibrary() {
+            const addSel = document.getElementById('add-type-sel'); addSel.innerHTML = '';
+            Object.keys(LABELS).forEach(k => addSel.innerHTML += `<option value="${k}">${LABELS[k]}</option>`);
+            const area = document.getElementById('visual-library-render'); area.innerHTML = '';
+            for(const [t, list] of Object.entries(appState.colors)) {
+                if(!list.length) continue;
+                const accItem = document.createElement('div');
+                accItem.className = 'accordion-item';
+                accItem.innerHTML = `
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span>${ICONS[t]} ${LABELS[t]}</span>
+                            <span style="background:var(--secondary); color:#fff; font-size:0.6em; padding:2px 8px; border-radius:20px;">${list.length}</span>
+                        </div>
+                        <span>▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                            ${list.map((c, idx) => `
+                                <div class="color-chip">
+                                    ${createSwatch(c.value, '18px')}
+                                    <span style="font-weight:700; font-size:0.8em;">${c.name}</span>
+                                    <div style="display:flex; gap:6px; margin-right:10px;">
+                                        <span style="cursor:pointer;" onclick="openLibEdit('${t}', ${idx})">✏️</span>
+                                        <span style="color:var(--danger); cursor:pointer;" onclick="deleteLibItem('${t}', ${idx})">&times;</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                area.appendChild(accItem);
+            }
+        }
+
+        function toggleAccordion(el) {
+            const content = el.nextElementSibling;
+            const isOpen = content.classList.contains('open');
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+            document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+            if(!isOpen) { content.classList.add('open'); el.classList.add('active'); }
+        }
+
+        function saveToLibrary() {
+            const t = document.getElementById('add-type-sel').value, n = document.getElementById('add-color-name').value.trim();
+            let v = document.getElementById('add-color-hex').value.trim();
+            if(document.getElementById('check-use-anal').checked) {
+                if(!currentAnal.length) return showToast("حلل صورة أولاً");
+                v = currentAnal.length === 1 ? currentAnal[0].color : JSON.stringify(currentAnal);
+            }
+            if(!n || !v) return showToast("أكمل البيانات");
+            if(!appState.colors[t]) appState.colors[t] = [];
+            appState.colors[t].push({name:n, value:v});
+            saveStorage(); renderLibrary(); showToast("تمت الإضافة");
+            document.getElementById('add-color-name').value = ''; document.getElementById('add-color-hex').value = '';
+        }
+
+        function deleteLibItem(t, i) { if(confirm("حذف؟")) { appState.colors[t].splice(i,1); saveStorage(); renderLibrary(); } }
+        function openLibEdit(t, i) { libEditType=t; libEditIdx=i; const item=appState.colors[t][i]; document.getElementById('edit-lib-name').value=item.name; document.getElementById('edit-lib-hex').value=item.value; document.getElementById('modal-edit-lib-item').classList.add('show'); }
+        function closeLibEdit() { document.getElementById('modal-edit-lib-item').classList.remove('show'); }
+        function confirmLibEdit() { const n=document.getElementById('edit-lib-name').value, h=document.getElementById('edit-lib-hex').value; appState.colors[libEditType][libEditIdx]={name:n, value:h}; saveStorage(); renderLibrary(); renderSaved(); closeLibEdit(); }
+
+        function toggleAnalView() { const a=document.getElementById('check-use-anal').checked; document.getElementById('anal-section').classList.toggle('hidden', !a); document.getElementById('manual-hex-field').classList.toggle('hidden', a); }
+        
+        function initImgPicker() {
+            const inp=document.getElementById('input-img-file'), img=document.getElementById('img-preview-box');
+            inp.onchange=(e)=>{
+                const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{
+                    img.src=ev.target.result; document.getElementById('anal-active-area').classList.remove('hidden');
+                    img.onload=()=>{
+                        const cvs=document.createElement('canvas'), ctx=cvs.getContext('2d'); cvs.width=50; cvs.height=50; ctx.drawImage(img,0,0,50,50);
+                        const d=ctx.getImageData(0,0,50,50).data, counts={};
+                        for(let i=0; i<d.length; i+=40) { const h="#"+((1<<24)+(d[i]<<16)+(d[i+1]<<8)+d[i+2]).toString(16).slice(1); counts[h]=(counts[h]||0)+1; }
+                        const s=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3), total=s.reduce((a,b)=>a+b[1],0);
+                        currentAnal = s.map(x=>({color:x[0], percent:Math.round((x[1]/total)*100)})); renderAnalUI();
+                    }
+                }; r.readAsDataURL(f);
+            };
+            img.onclick=(e)=>{
+                const cvs=document.createElement('canvas'); cvs.width=img.naturalWidth; cvs.height=img.naturalHeight; const ctx=cvs.getContext('2d'); ctx.drawImage(img,0,0);
+                const rect=img.getBoundingClientRect(), x=(e.clientX-rect.left)*(img.naturalWidth/rect.width), y=(e.clientY-rect.top)*(img.naturalHeight/rect.height);
+                const p=ctx.getImageData(x,y,1,1).data, h="#"+((1<<24)+(p[0]<<16)+(p[1]<<8)+p[2]).toString(16).slice(1);
+                currentAnal.push({color:h, percent:10}); normalizeAnal(); renderAnalUI();
+            };
+        }
+
+        function renderAnalUI() {
+            const b=document.getElementById('anal-bubbles-list'), v=document.getElementById('anal-viz-bar'); b.innerHTML=''; v.innerHTML='';
+            currentAnal.forEach((c,i)=>{
+                b.innerHTML += `<div class="anal-bubble-item"><div style="width:22px; height:22px; border-radius:50%; background:${c.color};"></div><span style="flex:1; font-family:monospace; font-size:0.8em; font-weight:800;">${c.color}</span><input type="number" value="${c.percent}" onchange="currentAnal[${i}].percent=parseInt(this.value); renderAnalUI();" style="width:55px; border:1px solid #ddd; border-radius:8px; text-align:center;">% <span style="color:var(--danger); cursor:pointer;" onclick="currentAnal.splice(${i},1); renderAnalUI();">&times;</span></div>`;
+                const seg=document.createElement('div'); seg.style.width=c.percent+'%'; seg.style.background=c.color; v.appendChild(seg);
+            });
+        }
+        function normalizeAnal() { const t=currentAnal.reduce((a,b)=>a+b.percent,0); if(t>100) currentAnal.forEach(c=>c.percent=Math.floor((c.percent/t)*100)); }
+
+        function renderSaved() {
+            const area = document.getElementById('saved-list-render'); area.innerHTML = '';
+            if(!appState.saved.length) return area.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">المحفوظات فارغة</div>';
+            appState.saved.forEach((look, i) => {
+                const card = document.createElement('div'); card.className = 'card';
+                const meta = STYLE_META[look.pref] || STYLE_META['creative'];
+                
+                let h = `<div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+                            <div>
+                                <strong style="font-size:1.1em; display:block;">${look.name}</strong>
+                                <span class="badge ${meta.class}">${meta.icon} ${meta.label}</span>
+                            </div>
+                            <div style="display:flex; gap:5px; align-items:center;">
+                                <button class="btn btn-sm btn-outline" onclick="openEdit(${i}, 'saved')">✏️</button>
+                                <button class="btn btn-sm btn-outline" style="color:var(--danger);" onclick="deleteSaved(${i})">🗑️</button>
+                            </div>
+                         </div>`;
+                look.items.forEach(it => {
+                    const c = findColor(it.type, it.colorValue);
+                    h += `<div class="item-row">${createSwatch(it.colorValue, '28px')} <div><div style="font-size:0.7em; color:var(--text-muted);">${LABELS[it.type]}</div><div style="font-weight:800; font-size:0.95em;">${c.name}</div></div></div>`;
+                });
+                card.innerHTML = h; area.appendChild(card);
+            });
+        }
+        function deleteSaved(i) { if(confirm("حذف هذا الطقم؟")) { appState.saved.splice(i,1); saveStorage(); renderSaved(); } }
+
+        function getSwatchStyle(v) {
+            if(!v) return "background:#ccc;";
+            if(v.startsWith('[')) { try { const p=JSON.parse(v); let g="linear-gradient(to right"; let cur=0; p.forEach(c=>{ g+=`, ${c.color} ${cur}% ${cur+c.percent}%`; cur+=c.percent; }); return `background:${g});`; } catch(e){ return "background:#ccc;"; } }
+            if(v.includes('|')) { const colors = v.split('|'); return `background: linear-gradient(to right, ${colors.join(', ')});`; }
+            return `background:${v};`;
+        }
+
+        function createSwatch(v, s='24px') { return `<span style="display:inline-block; width:${s}; height:${s}; border-radius:10px; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); vertical-align:middle; ${getSwatchStyle(v)}"></span>`; }
+        function getPool(t) { if(t==='jacket') return [...(appState.colors.jacket||[]), ...(appState.colors.sweater||[])]; if(t==='shirt') return [...(appState.colors.shirt||[]), ...(appState.colors.checkeredShirt||[])]; return appState.colors[t]||[]; }
+        function findColor(t, v) { return getPool(t).find(x=>x.value===v) || {name: v.includes('|') ? 'متعدد الألوان' : v, value:v}; }
+        function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+        function exportLib() { const b=new Blob([JSON.stringify(appState.colors)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='library.json'; a.click(); }
+        function exportAllSaved() { const b=new Blob([JSON.stringify(appState.saved)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='saved_looks.json'; a.click(); }
+        function importLibrary(e) { const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=(ev)=>{ try { const imp=JSON.parse(ev.target.result); appState.colors=Object.assign(appState.colors, imp); saveStorage(); renderLibrary(); showToast("تم الاستيراد بنجاح"); } catch(err){ showToast("خطأ"); } }; r.readAsText(f); }
+        function switchView(v, el) { document.querySelectorAll('.view-section').forEach(x => x.classList.remove('active')); document.getElementById(`view-${v}`).classList.add('active'); document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active')); el.classList.add('active'); }
+        
+        function saveOutfit(its, pref) { 
+            const n = prompt("أدخل اسماً لهذا التنسيق:"); 
+            if(n) { 
+                appState.saved.push({name: n, items: its, pref: pref || appState.pref}); 
+                saveStorage(); renderSaved(); showToast("تم الحفظ في المحفوظات"); closeEdit(); 
+            } 
+        }
+    </script>
+</body>
+</html>
